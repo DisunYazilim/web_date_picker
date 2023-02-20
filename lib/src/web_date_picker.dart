@@ -175,6 +175,8 @@ class _WebDatePickerState extends State<WebDatePicker> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   border: const OutlineInputBorder(),
                   suffixIcon: _buildPrefixIcon(),
+                  filled: true,
+                  fillColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: widget.borderColor,
