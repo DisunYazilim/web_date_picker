@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'datetime_extension.dart';
 import 'string_extension.dart';
 
@@ -11,6 +12,8 @@ class WebDatePicker extends StatefulWidget {
     this.lastDate,
     required this.onChange,
     this.style,
+    this.borderColor = Colors.grey,
+    this.iconColor = Colors.grey,
     this.width = 200,
     this.height = 36,
     this.prefix,
@@ -34,6 +37,12 @@ class WebDatePicker extends StatefulWidget {
 
   /// The text style of date form field
   final TextStyle? style;
+
+  /// The color of text form field border
+  final Color borderColor;
+
+  /// The color of calendar icon
+  final Color iconColor;
 
   /// The width and height of date form field
   final double width;
@@ -104,25 +113,35 @@ class _WebDatePickerState extends State<WebDatePicker> {
 
   OverlayEntry _createOverlayEntry() {
     return OverlayEntry(
-      builder: (context) => Positioned(
-        width: 300,
-        child: CompositedTransformFollower(
-          link: _layerLink,
-          showWhenUnlinked: false,
-          offset: Offset(widget.overlayHorizontalPosiition,
-              widget.overlayVerticalPosition),
-          child: Material(
-            elevation: 5,
-            child: SizedBox(
-              height: 250,
-              child: CalendarDatePicker(
-                firstDate: _firstDate,
-                lastDate: _lastDate,
-                initialDate: _selectedDate ?? DateTime.now(),
-                onDateChanged: onChange,
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          _focusNode.unfocus();
+        },
+        child: Stack(
+          children: [
+            Positioned(
+              width: 300,
+              child: CompositedTransformFollower(
+                link: _layerLink,
+                showWhenUnlinked: false,
+                offset: Offset(widget.overlayHorizontalPosiition,
+                    widget.overlayVerticalPosition + widget.height),
+                child: Material(
+                  elevation: 5,
+                  child: SizedBox(
+                    height: 250,
+                    child: CalendarDatePicker(
+                      firstDate: _firstDate,
+                      lastDate: _lastDate,
+                      initialDate: _selectedDate ?? DateTime.now(),
+                      onDateChanged: onChange,
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -149,11 +168,18 @@ class _WebDatePickerState extends State<WebDatePicker> {
           child: TextFormField(
             focusNode: _focusNode,
             controller: _controller,
+            style: widget.style,
             decoration: widget.inputDecoration ??
                 InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   border: const OutlineInputBorder(),
                   suffixIcon: _buildPrefixIcon(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: widget.borderColor,
+                      width: 1.0,
+                    ),
+                  ),
                 ),
             onChanged: (dateString) {
               final date = dateString.parseToDateTime(widget.dateformat);
@@ -182,7 +208,11 @@ class _WebDatePickerState extends State<WebDatePicker> {
         splashRadius: 16,
       );
     } else {
-      return widget.prefix ?? const Icon(Icons.date_range);
+      return widget.prefix ??
+          Icon(
+            Icons.date_range,
+            color: widget.iconColor,
+          );
     }
   }
 }
