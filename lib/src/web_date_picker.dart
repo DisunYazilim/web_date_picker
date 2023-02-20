@@ -169,6 +169,7 @@ class _WebDatePickerState extends State<WebDatePicker> {
             focusNode: _focusNode,
             controller: _controller,
             style: widget.style,
+            cursorColor: widget.borderColor,
             decoration: widget.inputDecoration ??
                 InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10),
